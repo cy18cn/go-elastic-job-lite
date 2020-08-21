@@ -1,0 +1,8 @@
+module go-elastic-job-lite
+
+go 1.14
+
+require (
+	github.com/go-zookeeper/zk v1.0.2
+	github.com/robfig/cron/v3 v3.0.1
+)
