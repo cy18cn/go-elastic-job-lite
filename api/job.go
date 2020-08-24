@@ -1,5 +1,14 @@
 package api
 
+type ExecutionType int8
+
+const (
+	// ready to execute
+	READY ExecutionType = 1
+	// failover task
+	FAILOVER
+)
+
 type ElasticJob interface {
 }
 
@@ -27,6 +36,8 @@ type JobContext struct {
 	// sharding total count
 	ShardingCount int32
 
+	shardingItems []int32
+
 	// Customized job parameter
 	JobParameter interface{}
 	// Customized ShardingItem parameters, key is shard
@@ -35,4 +46,8 @@ type JobContext struct {
 	SendJobEvent                 bool
 	JobEventSamplingCount        int
 	CurrentJobEventSamplingCount int
+}
+
+func (ctx *JobContext) ShardingItems() []int32 {
+	return ctx.shardingItems
 }

@@ -1,8 +1,9 @@
-package schedule
+package scheduler
 
 import (
 	"go-elastic-job-lite/api"
 	"go-elastic-job-lite/config"
+	"go-elastic-job-lite/event"
 )
 
 type JobFacade interface {
@@ -24,8 +25,8 @@ type JobFacade interface {
 	// Get current job context
 	GetJobContext() api.JobContext
 
-	// Set job miss execution tag
-	MisfireIfRunning(shardingItems []int32)
+	// Set job miss execution tag, if has running items
+	MisfireIfHasRunningItems(shardingItems []int32) bool
 
 	// Clear job miss execution tag
 	ClearMisfire(shardingItems []int32)
@@ -36,4 +37,22 @@ type JobFacade interface {
 	// Eligible Job For Running
 	// if need to stop or re-sharding or not stream will stop running
 	EligibleForJobRunning() bool
+
+	// re-sharding
+	NeedReSharding() bool
+
+	// before job executed
+	BeforeExecuted(ctx api.JobContext) error
+
+	// after job executed
+	AfterExecuted(ctx api.JobContext) error
+
+	// post job execution event
+	PostJobExecutionEvent(event event.JobExecutionEvent)
+
+	// Post job status trace event
+	PostJobStatusTraceEvent(jobId, message string, state event.State)
+}
+
+type LiteJobFacade struct {
 }

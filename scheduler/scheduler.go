@@ -1,4 +1,4 @@
-package schedule
+package scheduler
 
 import (
 	"go-elastic-job-lite/api"
@@ -16,6 +16,6 @@ type JobScheduler struct {
 }
 
 func (scheduler *JobScheduler) Start() {
-	scheduler.cron.AddJob(scheduler.jobConfig.GetJobName())
+	scheduler.cron.AddJob(scheduler.jobConfig.GetJobName(), scheduler.)
 	scheduler.cron.Start()
 }
