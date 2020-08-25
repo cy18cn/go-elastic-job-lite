@@ -14,7 +14,7 @@ type JobTypeConfiguration interface {
 	// Get jobReflectType type
 	GetJobType() JobType
 	// Get jobReflectType core configuration
-	GetCoreConfig() JobCoreConfiguration
+	GetCoreConfig() *JobCoreConfiguration
 }
 
 type JobCoreConfiguration struct {
@@ -48,11 +48,11 @@ func (config *JobCoreConfiguration) GetShardingItemParameters() string {
 	return config.shardingItemParameters
 }
 
-func (config *JobCoreConfiguration) GetFailover() bool {
+func (config *JobCoreConfiguration) IsFailover() bool {
 	return config.failover
 }
 
-func (config *JobCoreConfiguration) GetMisfire() bool {
+func (config *JobCoreConfiguration) IsMisfire() bool {
 	return config.misfire
 }
 

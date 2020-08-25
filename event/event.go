@@ -17,8 +17,8 @@ type State int8
 
 const (
 	NORMAL_TRIGGER ExecutionSource = 1
-	MISFIRE                        = 2
-	FAILOVER                       = 3
+	MISFIRE        ExecutionSource = 2
+	FAILOVER       ExecutionSource = 3
 
 	TASK_STAGING State = 1
 	TASK_RUNNING

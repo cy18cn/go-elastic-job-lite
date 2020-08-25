@@ -49,11 +49,11 @@ func (config *LiteJobConfiguration) GetReconcileIntervalMinutes() int {
 }
 
 func (config *LiteJobConfiguration) GetJobName() string {
-	return config.jobConfig.GetCoreConfig().JobName
+	return config.jobConfig.GetCoreConfig().GetJobName()
 }
 
 func (config *LiteJobConfiguration) IsFailover() bool {
-	return config.jobConfig.GetCoreConfig().Failover
+	return config.jobConfig.GetCoreConfig().IsFailover()
 }
 
 // LiteJobConfiguration builder
