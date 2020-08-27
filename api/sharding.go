@@ -2,21 +2,62 @@ package api
 
 type ShardingContext struct {
 	// job id
-	JobId string
+	jobId string
 	// job name
-	JobName string
+	jobName string
 
-	ShardingItem int32
+	shardingItem int32
 
 	// sharding total count
-	ShardingCount int32
+	shardingCount int32
 
 	// Customized job parameter
-	JobParameter interface{}
+	jobParameter string
 	// Customized ShardingItem parameter, key is shard
-	ShardingItemParameter interface{}
+	shardingItemParameter string
 
-	SendJobEvent                 bool
-	JobEventSamplingCount        int
-	CurrentJobEventSamplingCount int
+	sendJobEvent                 bool
+	jobEventSamplingCount        int
+	currentJobEventSamplingCount int
+}
+
+func NewShardingContext(
+	jobId,
+	jobName,
+	jobParameter,
+	shardingItemParameter string,
+	shardingItem,
+	shardingCount int32) ShardingContext {
+	return ShardingContext{
+		jobId:                 jobId,
+		jobName:               jobName,
+		shardingItem:          shardingItem,
+		shardingCount:         shardingCount,
+		jobParameter:          jobParameter,
+		shardingItemParameter: shardingItemParameter,
+	}
+}
+
+func (ctx ShardingContext) JobId() string {
+	return ctx.jobId
+}
+
+func (ctx ShardingContext) JobName() string {
+	return ctx.jobName
+}
+
+func (ctx ShardingContext) ShardingItem() int32 {
+	return ctx.shardingItem
+}
+
+func (ctx ShardingContext) ShardingCount() int32 {
+	return ctx.shardingCount
+}
+
+func (ctx ShardingContext) JobParameter() string {
+	return ctx.jobParameter
+}
+
+func (ctx ShardingContext) ShardingItemParameter() string {
+	return ctx.shardingItemParameter
 }

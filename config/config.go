@@ -110,13 +110,14 @@ func (simple *SimpleJobConfiguration) GetJobType() JobType {
 	return SIMPLE
 }
 
-func (simple *SimpleJobConfiguration) GetCoreConfig() JobCoreConfiguration {
-	return simple.jobCoreConfiguration
+func (simple *SimpleJobConfiguration) GetCoreConfig() *JobCoreConfiguration {
+	return &simple.jobCoreConfiguration
 }
 
 type DataflowJobConfiguration struct {
 	jobCoreConfiguration JobCoreConfiguration
 	jobReflectType       string
+	streamProcessing     bool
 }
 
 func NewDataflowJobConfiguration(coreConfig JobCoreConfiguration,
@@ -135,31 +136,39 @@ func (dataflow *DataflowJobConfiguration) GetJobType() JobType {
 	return DATAFLOW
 }
 
-func (dataflow *DataflowJobConfiguration) GetCoreConfig() JobCoreConfiguration {
-	return dataflow.jobCoreConfiguration
+func (dataflow *DataflowJobConfiguration) GetCoreConfig() *JobCoreConfiguration {
+	return &dataflow.jobCoreConfiguration
+}
+
+func (dataflow *DataflowJobConfiguration) StreamProcessing() bool {
+	return dataflow.streamProcessing
 }
 
 type ScriptJobConfiguration struct {
 	jobCoreConfiguration JobCoreConfiguration
-	jobReflectType       string
+	scriptCommandLine    string
 }
 
 func NewScriptJobConfiguration(coreConfig JobCoreConfiguration,
-	jobReflectType string) ScriptJobConfiguration {
+	scriptCommandLine string) ScriptJobConfiguration {
 	return ScriptJobConfiguration{
 		jobCoreConfiguration: coreConfig,
-		jobReflectType:       jobReflectType,
+		scriptCommandLine:    scriptCommandLine,
 	}
 }
 
 func (script *ScriptJobConfiguration) GetJobReflectType() string {
-	return script.jobReflectType
+	return "api.ScriptJob"
 }
 
 func (script *ScriptJobConfiguration) GetJobType() JobType {
 	return SCRIPT
 }
 
-func (script *ScriptJobConfiguration) GetCoreConfig() JobCoreConfiguration {
-	return script.jobCoreConfiguration
+func (script *ScriptJobConfiguration) GetCoreConfig() *JobCoreConfiguration {
+	return &script.jobCoreConfiguration
+}
+
+func (script *ScriptJobConfiguration) ScriptCommandLine() string {
+	return script.scriptCommandLine
 }

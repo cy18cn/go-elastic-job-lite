@@ -17,12 +17,12 @@ type JobInstance struct {
 }
 
 type SimpleJob interface {
-	Execute(ctx ShardingContext)
+	Execute(ctx ShardingContext) error
 }
 
 type DataFlowJob interface {
 	FetchData(ctx ShardingContext) []interface{}
-	ProcessData(ctx ShardingContext, data []interface{})
+	ProcessData(ctx ShardingContext, data []interface{}) error
 }
 
 type ScriptJob interface {
@@ -39,9 +39,9 @@ type JobContext struct {
 	shardingItems []int32
 
 	// Customized job parameter
-	JobParameter interface{}
+	JobParameter string
 	// Customized ShardingItem parameters, key is shard
-	ShardingItemParameters map[int32]interface{}
+	ShardingItemParameters map[int32]string
 
 	SendJobEvent                 bool
 	JobEventSamplingCount        int
