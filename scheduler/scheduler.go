@@ -15,7 +15,17 @@ type JobScheduler struct {
 	cron      *cron.Cron
 }
 
-func (scheduler *JobScheduler) Start() {
-	scheduler.cron.AddJob(scheduler.jobConfig.GetJobName(), scheduler.)
+func (scheduler *JobScheduler) Start() error {
+	typeConfig := scheduler.jobConfig.GetTypeConfig()
+	coreConfig := typeConfig.GetCoreConfig()
+
+	liteJob, err := NewLiteJob(scheduler.job, &LiteJobFacade{})
+	if err != nil {
+		return err
+	}
+
+	scheduler.cron.AddJob(scheduler.jobConfig.GetJobName(), liteJob)
 	scheduler.cron.Start()
+
+	return nil
 }

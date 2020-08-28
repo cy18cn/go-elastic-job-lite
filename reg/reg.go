@@ -8,7 +8,7 @@ import (
 type Registry interface {
 	Namespace(namespace string) error
 
-	ApplyConfig(jobConfig config.JobConfiguration) error
+	ApplyConfig(jobConfig config.JobTypeConfiguration) error
 
 	RegisterJob(job api.ElasticJob) error
 

@@ -22,7 +22,7 @@ type JobCoreConfiguration struct {
 	cron                   string
 	shardingTotalCount     int32
 	jobParameter           string
-	shardingItemParameters string
+	shardingItemParameters map[int32]string
 	failover               bool
 	misfire                bool
 	description            string
@@ -44,7 +44,7 @@ func (config *JobCoreConfiguration) GetJobParameter() string {
 	return config.jobParameter
 }
 
-func (config *JobCoreConfiguration) GetShardingItemParameters() string {
+func (config *JobCoreConfiguration) GetShardingItemParameters() map[int32]string {
 	return config.shardingItemParameters
 }
 

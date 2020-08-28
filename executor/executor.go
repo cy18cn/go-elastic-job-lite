@@ -11,6 +11,10 @@ import (
 
 type JobProcessor func(ctx api.ShardingContext) error
 
+type JobExecutor interface {
+	Execute() error
+}
+
 type ElasticJobExecutor struct {
 	jobName      string
 	jobFacade    scheduler.JobFacade
@@ -19,7 +23,7 @@ type ElasticJobExecutor struct {
 	processor    JobProcessor
 }
 
-func (exec *ElasticJobExecutor) Execute() {
+func (exec *ElasticJobExecutor) execute() error {
 	jobFacade := exec.jobFacade
 	var err error
 	// 1.check execution env
@@ -51,9 +55,10 @@ func (exec *ElasticJobExecutor) Execute() {
 	// 3. Execute job
 	err = jobFacade.BeforeExecuted(jobContext)
 	if err != nil {
-		exec.errorHandler.HandleException(jobContext.JobName, err)
+		exec.errorHandler.HandleException(jobContext.JobName(), err)
+		return err
 	}
-	exec.execute(jobContext, event.NORMAL_TRIGGER)
+	exec.doExecute(jobContext, event.NORMAL_TRIGGER)
 
 	// 4. Execute misfire job
 	//shardingItems := jobContext.ShardingItems()
@@ -66,11 +71,13 @@ func (exec *ElasticJobExecutor) Execute() {
 
 	err = jobFacade.AfterExecuted(jobContext)
 	if err != nil {
-		exec.errorHandler.HandleException(jobContext.JobName, err)
+		exec.errorHandler.HandleException(jobContext.JobName(), err)
 	}
+
+	return err
 }
 
-func (exec *ElasticJobExecutor) execute(ctx api.JobContext, source event.ExecutionSource) {
+func (exec *ElasticJobExecutor) doExecute(ctx api.JobContext, source event.ExecutionSource) {
 	//jobFacade := exec.jobFacade
 
 	if ctx.ShardingItems() == nil {
@@ -118,17 +125,17 @@ func (exec *ElasticJobExecutor) process(ctx api.JobContext, source event.Executi
 			//}
 
 			err := exec.processor(api.NewShardingContext(
-				ctx.JobId,
-				ctx.JobName,
-				ctx.JobParameter,
-				ctx.ShardingItemParameters[item],
+				ctx.JobId(),
+				ctx.JobName(),
+				ctx.JobParameter(),
+				ctx.ShardingItemParameters()[item],
 				item,
-				ctx.ShardingCount,
+				ctx.ShardingCount(),
 			))
 			if err != nil {
 				//completeEvent := startEvent.ExecutionFailure(err.Error())
 				//jobFacade.PostJobExecutionEvent(*completeEvent)
-				exec.errorHandler.HandleException(ctx.JobName, err)
+				exec.errorHandler.HandleException(ctx.JobName(), err)
 				return
 			}
 
@@ -165,6 +172,10 @@ func NewSimpleJobExecutor(
 			},
 		},
 	}
+}
+
+func (exec *SimpleJobExecutor) Execute() error {
+	return exec.execute()
 }
 
 type DataflowJobExecutor struct {
@@ -210,6 +221,10 @@ func NewDataflowJobExecutor(
 	}
 }
 
+func (exec *DataflowJobExecutor) Execute() error {
+	return exec.execute()
+}
+
 type ScriptJobExecutor struct {
 	ElasticJobExecutor
 }
@@ -235,4 +250,8 @@ func NewScriptJobExecutor(
 			},
 		},
 	}
+}
+
+func (exec *ScriptJobExecutor) Execute() error {
+	return exec.execute()
 }
