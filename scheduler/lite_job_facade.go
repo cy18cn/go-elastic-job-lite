@@ -55,7 +55,15 @@ type JobFacade interface {
 }
 
 type LiteJobFacade struct {
+	ctx       api.JobContext
 	listeners []api.ElasticJobListener
+}
+
+func NewJobFacade(ctx api.JobContext, listeners []api.ElasticJobListener) *LiteJobFacade {
+	return &LiteJobFacade{
+		ctx:       ctx,
+		listeners: listeners,
+	}
 }
 
 func (jobFacade *LiteJobFacade) LoadJobRootConfiguration(fromCache bool) config.JobRootConfiguration {
@@ -79,7 +87,7 @@ func (jobFacade *LiteJobFacade) RegisterJobCompleted(ctx api.JobContext) {
 }
 
 func (jobFacade *LiteJobFacade) GetJobContext() api.JobContext {
-	panic("implement me")
+	return jobFacade.ctx
 }
 
 func (jobFacade *LiteJobFacade) MisfireIfHasRunningItems(shardingItems []int32) bool {

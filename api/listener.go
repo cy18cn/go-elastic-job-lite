@@ -8,3 +8,14 @@ type ElasticJobListener interface {
 	// Run after job executed
 	AfterJobExecuted(ctx JobContext) error
 }
+
+type DefaultJobListener struct {
+}
+
+func (d *DefaultJobListener) BeforeJobExecuted(ctx JobContext) error {
+	return nil
+}
+
+func (d *DefaultJobListener) AfterJobExecuted(ctx JobContext) error {
+	return nil
+}

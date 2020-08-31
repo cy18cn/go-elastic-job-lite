@@ -69,7 +69,7 @@ type LiteJobConfigurationBuilder struct {
 	ReconcileIntervalMinutes int
 }
 
-func (builder *LiteJobConfigurationBuilder) build() LiteJobConfiguration {
+func (builder *LiteJobConfigurationBuilder) Build() LiteJobConfiguration {
 	return LiteJobConfiguration{
 		jobConfig:                builder.JobConfig,
 		monitorExecution:         builder.MonitorExecution,

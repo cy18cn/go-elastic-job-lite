@@ -65,7 +65,7 @@ type JobCoreConfigurationBuilder struct {
 	Cron                   string
 	ShardingTotalCount     int32
 	JobParameter           string
-	ShardingItemParameters string
+	ShardingItemParameters map[int32]string
 	Failover               bool
 	// misfire在间隔时间短的任务中比较鸡肋。按照这个例子说，20s之后，新一次的作业就执行了，没必要再进行misfire。
 	// misfire的正确用法是用于处理间隔时间长的作业，或者业务有局限的作业。举个例子：
@@ -75,7 +75,7 @@ type JobCoreConfigurationBuilder struct {
 	Description string
 }
 
-func (builder *JobCoreConfigurationBuilder) build() JobCoreConfiguration {
+func (builder *JobCoreConfigurationBuilder) Build() JobCoreConfiguration {
 	return JobCoreConfiguration{
 		jobName:                builder.JobName,
 		cron:                   builder.Cron,
@@ -91,6 +91,21 @@ func (builder *JobCoreConfigurationBuilder) build() JobCoreConfiguration {
 type SimpleJobConfiguration struct {
 	jobCoreConfiguration JobCoreConfiguration
 	jobReflectType       string
+}
+
+func NewSimpleJobConfiguration(
+	jobName, cron string,
+	shardingTotalCount int32,
+	jobReflectType string) SimpleJobConfiguration {
+	builder := JobCoreConfigurationBuilder{
+		JobName:            jobName,
+		Cron:               cron,
+		ShardingTotalCount: shardingTotalCount,
+	}
+	return SimpleJobConfiguration{
+		jobCoreConfiguration: builder.Build(),
+		jobReflectType:       jobReflectType,
+	}
 }
 
 func NewSimpleJobConfiguration(coreConfig JobCoreConfiguration,

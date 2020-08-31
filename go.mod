@@ -6,4 +6,5 @@ require (
 	github.com/go-zookeeper/zk v1.0.2
 	github.com/google/uuid v1.1.1
 	github.com/robfig/cron/v3 v3.0.1
+	github.com/spf13/cast v1.3.1
 )

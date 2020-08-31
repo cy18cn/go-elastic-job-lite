@@ -1,5 +1,12 @@
 package api
 
+import (
+	"fmt"
+	"go-elastic-job-lite/util"
+	"strconv"
+	"strings"
+)
+
 type ExecutionType int8
 
 const (
@@ -29,7 +36,8 @@ type ScriptJob interface {
 }
 
 type JobContext struct {
-	// job id
+	// job id: jobName@-@shardingItems@-@READY@-@instanceId
+	// instanceId: ip@-@1
 	jobId string
 	// job name
 	jobName string
@@ -49,14 +57,14 @@ type JobContext struct {
 }
 
 func NewJobContext(
-	jobId, jobName, jobParameter string,
+	jobName, jobParameter string,
 	shardingCount int32,
 	shardingItems []int32,
 	shardingItemParameters map[int32]string,
 	jobEventSamplingCount int,
 ) JobContext {
 	return JobContext{
-		jobId:                  jobId,
+		jobId:                  buildJobId(jobName, shardingItems),
 		jobName:                jobName,
 		shardingCount:          shardingCount,
 		shardingItems:          shardingItems,
@@ -112,4 +120,21 @@ func (ctx *JobContext) CurrentJobEventSamplingCount() int {
 
 func (ctx *JobContext) SetCurrentJobEventSamplingCount(currentJobEventSamplingCount int) {
 	ctx.currentJobEventSamplingCount = currentJobEventSamplingCount
+}
+
+func buildJobId(jobName string, shardingItems []int32) string {
+	ip, err := util.HostIP()
+	if err != nil {
+		ip = "127.0.0.1"
+	}
+
+	var items []string
+	for _, item := range shardingItems {
+		items = append(items, strconv.Itoa(int(item)))
+	}
+	return fmt.Sprintf("%s@-@%s@-@READY@-@%s",
+		jobName,
+		strings.Join(items, ","),
+		ip,
+	)
 }
